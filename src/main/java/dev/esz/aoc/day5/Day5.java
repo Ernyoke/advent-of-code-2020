@@ -59,6 +59,7 @@ public interface Day5 {
                     throw new IllegalStateException("Invalid character: " + c);
             }
         }
+        
         return row;
     }
 
@@ -66,6 +67,7 @@ public interface Day5 {
         int minColNum = 0;
         int maxColNum = 7;
         int col = 0;
+
         for (int i = 0; i < code.length(); i++) {
             char c = code.charAt(i);
             switch (c) {
@@ -83,6 +85,7 @@ public interface Day5 {
                     throw new IllegalStateException("Invalid character: " + c);
             }
         }
+
         return col;
     }
 }
