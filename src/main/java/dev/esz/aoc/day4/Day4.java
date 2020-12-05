@@ -4,7 +4,7 @@ import java.util.*;
 
 import static dev.esz.aoc.utils.MathUtils.isBetweenInclusive;
 
-public class Day4 {
+public interface Day4 {
     static int part1(List<String> lines) {
         final Set<String> requiredFields = Set.of("byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid");
         Set<String> passportFields = new HashSet<>();
