@@ -1,8 +1,8 @@
-package day3;
+package dev.esz.aoc.day3;
 
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
-import utils.Utils;
+import dev.esz.aoc.utils.Utils;
 
 import java.util.List;
 

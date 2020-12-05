@@ -1,4 +1,4 @@
-package day2;
+package dev.esz.aoc.day2;
 
 import lombok.Builder;
 import lombok.Data;

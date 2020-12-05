@@ -1,8 +1,8 @@
-package day4;
+package dev.esz.aoc.day4;
 
 import java.util.*;
 
-import static utils.MathUtils.isBetweenInclusive;
+import static dev.esz.aoc.utils.MathUtils.isBetweenInclusive;
 
 public class Day4 {
     static int part1(List<String> lines) {

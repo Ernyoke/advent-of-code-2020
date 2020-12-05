@@ -1,4 +1,4 @@
-package day1;
+package dev.esz.aoc.day1;
 
 import java.util.NoSuchElementException;
 import java.util.Set;

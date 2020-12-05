@@ -1,4 +1,4 @@
-package utils;
+package dev.esz.aoc.utils;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
