@@ -23,6 +23,6 @@ class Day6Test {
     @Test
     void part2() {
         List<String> lines = Utils.readLines("src/main/resources/day6/input.txt");
-        Assertions.assertThat(Day6.part2(lines)).isEqualTo(6763);
+        Assertions.assertThat(Day6.part2(lines)).isEqualTo(3512);
     }
 }
