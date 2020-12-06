@@ -1,12 +1,12 @@
-package dev.esz.aoc.day4;
+package dev.esz.aoc.day04;
 
 import java.util.*;
 
 import static dev.esz.aoc.utils.MathUtils.isBetweenInclusive;
 
-public interface Day4 {
+public interface Day04 {
     static long part1(List<List<String>> groups) {
-        return groups.stream().filter(Day4::isPassportValidForPart1).count();
+        return groups.stream().filter(Day04::isPassportValidForPart1).count();
     }
 
     private static boolean isPassportValidForPart1(List<String> passportLines) {
@@ -25,7 +25,7 @@ public interface Day4 {
     }
 
     static long part2(List<List<String>> groups) {
-        return groups.stream().filter(Day4::isPassportValidForPart2).count();
+        return groups.stream().filter(Day04::isPassportValidForPart2).count();
     }
 
     private static boolean isPassportValidForPart2(List<String> passportLines) {

@@ -1,12 +1,12 @@
-package dev.esz.aoc.day5;
+package dev.esz.aoc.day05;
 
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public interface Day5 {
+public interface Day05 {
     static long part1(List<String> codes) {
-        return getMax(codes.stream().map(Day5::computeSeatNumber).collect(Collectors.toUnmodifiableSet()));
+        return getMax(codes.stream().map(Day05::computeSeatNumber).collect(Collectors.toUnmodifiableSet()));
     }
 
     // The description of the problem is pretty vague. What we have to do is to find the missing maximum value from
@@ -15,7 +15,7 @@ public interface Day5 {
     // but in the end does not really matter, since our missing seat is somewhere in the middle ("Your seat wasn't at
     // the very front or back, though"). So we iterate from 0 and try to find the biggest value missing from the set.
     static long part2(List<String> codes) {
-        Set<Long> seats = codes.stream().map(Day5::computeSeatNumber).collect(Collectors.toUnmodifiableSet());
+        Set<Long> seats = codes.stream().map(Day05::computeSeatNumber).collect(Collectors.toUnmodifiableSet());
         long max = getMax(seats);
         int result = 0;
         for (int i = 0; i < max; i++) {

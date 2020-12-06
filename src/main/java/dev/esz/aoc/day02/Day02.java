@@ -1,4 +1,4 @@
-package dev.esz.aoc.day2;
+package dev.esz.aoc.day02;
 
 import lombok.Builder;
 import lombok.Data;
@@ -7,13 +7,13 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
-public interface Day2 {
+public interface Day02 {
     static long part1(List<String> lines) {
-        return lines.stream().map(Day2::getPasswordWithPolicy).filter(Day2::isValidOldPolicy).count();
+        return lines.stream().map(Day02::getPasswordWithPolicy).filter(Day02::isValidOldPolicy).count();
     }
 
     static long part2(List<String> lines) {
-        return lines.stream().map(Day2::getPasswordWithPolicy).filter(Day2::isValidNewPolicy).count();
+        return lines.stream().map(Day02::getPasswordWithPolicy).filter(Day02::isValidNewPolicy).count();
     }
 
     private static boolean isValidOldPolicy(PasswordWithPolicy passwordWithPolicy) {

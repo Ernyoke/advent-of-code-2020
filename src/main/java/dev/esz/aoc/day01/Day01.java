@@ -1,9 +1,9 @@
-package dev.esz.aoc.day1;
+package dev.esz.aoc.day01;
 
 import java.util.NoSuchElementException;
 import java.util.Set;
 
-public interface Day1 {
+public interface Day01 {
     static long part1(Set<Integer> numbers) {
         for (Integer number : numbers) {
             int numberToFind = 2020 - number;

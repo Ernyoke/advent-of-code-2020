@@ -1,13 +1,13 @@
-package dev.esz.aoc.day6;
+package dev.esz.aoc.day06;
 
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-public interface Day6 {
+public interface Day06 {
     static long part1(List<List<String>> groups) {
-        return groups.stream().mapToLong(Day6::countDistinct).sum();
+        return groups.stream().mapToLong(Day06::countDistinct).sum();
     }
 
     private static long countDistinct(List<String> answers) {
@@ -15,7 +15,7 @@ public interface Day6 {
     }
 
     static long part2(List<List<String>> groups) {
-        return groups.stream().mapToLong(Day6::countDistinctExcludeDuplicates).sum();
+        return groups.stream().mapToLong(Day06::countDistinctExcludeDuplicates).sum();
     }
 
     private static long countDistinctExcludeDuplicates(List<String> answers) {

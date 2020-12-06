@@ -1,8 +1,8 @@
-package dev.esz.aoc.day3;
+package dev.esz.aoc.day03;
 
 import java.util.List;
 
-public interface Day3 {
+public interface Day03 {
     static int countTrees(List<String> lines, int right, int down) {
         int j = 0;
         int counter = 0;
