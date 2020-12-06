@@ -6,43 +6,29 @@ import java.util.Set;
 import java.util.stream.Collectors;
 
 public interface Day6 {
-    static int part1(List<String> lines) {
-        Set<Character> answers = new HashSet<>();
-        int count = 0;
-
-        for (String line : lines) {
-            if (line.isBlank() || line.isEmpty()) {
-                count += answers.size();
-                answers.clear();
-            } else {
-                answers.addAll(line.chars().mapToObj(c -> (char) c).collect(Collectors.toUnmodifiableSet()));
-            }
-        }
-
-        return count + answers.size();
+    static long part1(List<List<String>> groups) {
+        return groups.stream().mapToLong(Day6::countDistinct).sum();
     }
 
-    static int part2(List<String> lines) {
-        Set<Character> answers = new HashSet<>();
-        int count = 0;
-        boolean newGroup = true;
+    private static long countDistinct(List<String> answers) {
+        return answers.stream().flatMapToInt(String::chars).distinct().count();
+    }
 
-        for (String line : lines) {
-            if (line.isBlank() || line.isEmpty()) {
-                count += answers.size();
-                answers.clear();
-                newGroup = true;
-            } else {
-                Set<Character> currentAnswers = line.chars().mapToObj(c -> (char) c).collect(Collectors.toUnmodifiableSet());
-                if (newGroup) {
-                    answers.addAll(currentAnswers);
-                    newGroup = false;
-                } else {
-                    answers.retainAll(currentAnswers);
-                }
-            }
+    static long part2(List<List<String>> groups) {
+        return groups.stream().mapToLong(Day6::countDistinctExcludeDuplicates).sum();
+    }
+
+    private static long countDistinctExcludeDuplicates(List<String> answers) {
+        Set<Character> distinctAnswers = new HashSet<>(answers.get(0).chars()
+                .mapToObj(c -> (char) c)
+                .collect(Collectors.toUnmodifiableSet()));
+
+        for (int i = 1; i < answers.size(); i++) {
+            distinctAnswers.retainAll(answers.get(i).chars()
+                    .mapToObj(c -> (char) c)
+                    .collect(Collectors.toUnmodifiableSet()));
         }
 
-        return count + answers.size();
+        return distinctAnswers.size();
     }
 }

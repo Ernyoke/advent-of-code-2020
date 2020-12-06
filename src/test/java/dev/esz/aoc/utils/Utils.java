@@ -35,4 +35,26 @@ public class Utils {
         }
         return lines;
     }
+
+    public static List<List<String>> readLinesGroupedByEmptyLine(String path) {
+        List<List<String>> groups = new ArrayList<>();
+        List<String> group = new ArrayList<>();
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(path))) {
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                if (line.isBlank() || line.isBlank()) {
+                    groups.add(group);
+                    group = new ArrayList<>();
+                } else {
+                    group.add(line);
+                }
+            }
+            if (!group.isEmpty()) {
+                groups.add(group);
+            }
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+        return groups;
+    }
 }
