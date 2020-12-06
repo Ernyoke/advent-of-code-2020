@@ -5,58 +5,43 @@ import java.util.*;
 import static dev.esz.aoc.utils.MathUtils.isBetweenInclusive;
 
 public interface Day4 {
-    static int part1(List<String> lines) {
+    static long part1(List<List<String>> groups) {
+        return groups.stream().filter(Day4::isPassportValidForPart1).count();
+    }
+
+    private static boolean isPassportValidForPart1(List<String> passportLines) {
         final Set<String> requiredFields = Set.of("byr", "iyr", "eyr", "hgt", "hcl", "ecl", "pid");
+
         Set<String> passportFields = new HashSet<>();
-
-        int count = 0;
-        for (String rawLine : lines) {
-            String line = rawLine.strip();
-            if (line.isBlank() || line.isEmpty()) {
-                if (passportFields.containsAll(requiredFields)) {
-                    count++;
-                }
-                passportFields.clear();
-            } else {
-                String[] parts = line.split(" ");
-                for (String part : parts) {
-                    passportFields.add(part.split(":")[0]);
-                }
+        for (String passportLineRaw : passportLines) {
+            String passportLine = passportLineRaw.strip();
+            String[] parts = passportLine.split(" ");
+            for (String part : parts) {
+                passportFields.add(part.split(":")[0]);
             }
         }
-        if (passportFields.containsAll(requiredFields)) {
-            count++;
-        }
 
-        return count;
+        return passportFields.containsAll(requiredFields);
     }
 
-    static int part2(List<String> lines) {
+    static long part2(List<List<String>> groups) {
+        return groups.stream().filter(Day4::isPassportValidForPart2).count();
+    }
+
+    private static boolean isPassportValidForPart2(List<String> passportLines) {
         Map<String, String> passport = new HashMap<>();
-
-        int count = 0;
-        for (String rawLine : lines) {
-            String line = rawLine.strip();
-            if (line.isBlank() || line.isEmpty()) {
-                if (isPassportValid(passport)) {
-                    count++;
-                }
-                passport.clear();
-            } else {
-                String[] parts = line.split(" ");
-                for (String part : parts) {
-                    passport.put(part.split(":")[0], part.split(":")[1]);
-                }
+        for (String passportLineRaw : passportLines) {
+            String passportLine = passportLineRaw.strip();
+            String[] parts = passportLine.split(" ");
+            for (String part : parts) {
+                passport.put(part.split(":")[0], part.split(":")[1]);
             }
         }
-        if (isPassportValid(passport)) {
-            count++;
-        }
 
-        return count;
+        return isPassportValidForComplexPolicy(passport);
     }
 
-    private static boolean isPassportValid(Map<String, String> passport) {
+    private static boolean isPassportValidForComplexPolicy(Map<String, String> passport) {
         try {
             return isBirthYearValid(passport.get("byr")) &&
                     isIssueYearValid(passport.get("iyr")) &&

@@ -9,13 +9,13 @@ import java.util.List;
 class Day4Test {
     @Test
     void part1() {
-        List<String> lines = Utils.readLines("src/main/resources/day4/input.txt");
-        Assertions.assertThat(Day4.part1(lines)).isEqualTo(230);
+        List<List<String>> groups = Utils.readLinesGroupedByEmptyLine("src/main/resources/day4/input.txt");
+        Assertions.assertThat(Day4.part1(groups)).isEqualTo(230);
     }
 
     @Test
     void part2() {
-        List<String> lines = Utils.readLines("src/main/resources/day4/input.txt");
+        List<List<String>> lines = Utils.readLinesGroupedByEmptyLine("src/main/resources/day4/input.txt");
         Assertions.assertThat(Day4.part2(lines)).isEqualTo(156);
     }
 }
