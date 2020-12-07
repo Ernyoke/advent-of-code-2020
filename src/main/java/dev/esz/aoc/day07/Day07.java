@@ -11,13 +11,12 @@ import java.util.stream.Collectors;
 public interface Day07 {
     static int part1(List<String> lines) {
         List<Bag> bags = lines.stream().map(Day07::getBag).collect(Collectors.toUnmodifiableList());
-        return countNumberOfBagsContainingColor(bags, "shiny gold");
+        return countNumberOfBagsContainingColor("shiny gold", bags);
     }
 
     static long part2(List<String> lines) {
         List<Bag> bags = lines.stream().map(Day07::getBag).collect(Collectors.toUnmodifiableList());
-        Map<String, Bag> colorToBag = bags.stream().collect(Collectors.toUnmodifiableMap(Bag::getColor, bag -> bag));
-        return computeMaxContentForBagWithColor("shiny gold", colorToBag);
+        return computeMaxContentForBagWithColor("shiny gold", bags);
     }
 
     private static Bag getBag(String line) {
@@ -39,7 +38,7 @@ public interface Day07 {
         return content;
     }
 
-    private static int countNumberOfBagsContainingColor(List<Bag> bags, String color) {
+    private static int countNumberOfBagsContainingColor(String color, List<Bag> bags) {
         Set<String> touched = new HashSet<>();
         touched.add(color);
 
@@ -63,22 +62,24 @@ public interface Day07 {
                 }
             }
         }
+
         return nrBags;
     }
 
-    private static long computeMaxContentForBagWithColor(String color, Map<String, Bag> colorToBag) {
+    private static long computeMaxContentForBagWithColor(String color, List<Bag> bags) {
+        Map<String, Bag> colorToBag = bags.stream().collect(Collectors.toUnmodifiableMap(Bag::getColor, bag -> bag));
+
         Queue<BagWithCount> bagQueue = new ArrayDeque<>();
         bagQueue.offer(new BagWithCount(colorToBag.get(color), 1));
-        long result = 0;
 
+        long result = 0;
         while (!bagQueue.isEmpty()) {
             BagWithCount currentBagWithCount = bagQueue.poll();
             Bag bag = currentBagWithCount.getBag();
             result += currentBagWithCount.getContentCount();
-            for (var contentEntry : bag.getContent().entrySet()) {
-                Bag bagContent = colorToBag.get(contentEntry.getKey());
-                int nrBagContent = contentEntry.getValue();
-                bagQueue.offer(new BagWithCount(bagContent, currentBagWithCount.getContentCount() * nrBagContent));
+            for (Map.Entry<String, Integer> entry : bag.getContent().entrySet()) {
+                Bag bagContent = colorToBag.get(entry.getKey());
+                bagQueue.offer(new BagWithCount(bagContent, currentBagWithCount.getContentCount() * entry.getValue()));
             }
         }
 
