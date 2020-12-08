@@ -22,16 +22,16 @@ public interface Day08 {
         for (int i = 0; i < instructions.size(); i++) {
             Instruction originalInstruction = instructions.get(i);
             Operation operation = originalInstruction.getOperation();
+            List<Operation> operationsToSwitch = List.of(Operation.jmp, Operation.nop);
 
-            if (operation == Operation.jmp || operation == Operation.nop) {
-
+            if (operationsToSwitch.contains(operation)) {
                 Instruction replacement = Instruction.builder()
                         .operation(operation == Operation.jmp ? Operation.nop : Operation.jmp)
                         .argument(originalInstruction.getArgument())
                         .build();
                 instructions.set(i, replacement);
-                ExecutionResult executionResult = getExecutionResult(instructions);
 
+                ExecutionResult executionResult = getExecutionResult(instructions);
                 if (!executionResult.isInfiniteLoop()) {
                     return executionResult.getAccumulatorValue();
                 }
@@ -80,7 +80,6 @@ public interface Day08 {
                     break;
             }
             alreadyExecutedInstructions.add(instruction);
-
         }
 
         return ExecutionResult.builder()
