@@ -9,6 +9,20 @@ import java.util.List;
 import java.util.Set;
 
 public class Utils {
+    public static List<Long> readNumbers(String path) {
+        List<Long> numbers = new ArrayList<>();
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(path))) {
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                numbers.add(Long.valueOf(line));
+            }
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+        return numbers;
+    }
+
+
     public static Set<Integer> readUniqNumbers(String path) {
         Set<Integer> numbers = new HashSet<>();
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(path))) {
