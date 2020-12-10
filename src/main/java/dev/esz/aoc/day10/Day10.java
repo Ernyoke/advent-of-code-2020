@@ -10,7 +10,7 @@ public interface Day10 {
         return getDifferences(jolts);
     }
 
-    Map<String, Integer> cache = new HashMap<>();
+    Map<String, Long> cache = new HashMap<>();
 
     private static int getDifferences(List<Integer> jolts) {
         int previous = 0;
@@ -29,7 +29,7 @@ public interface Day10 {
         return diffByOne * (diffByThree + 1);
     }
 
-    static int part2(List<Integer> numbers) {
+    static long part2(List<Integer> numbers) {
         List<Integer> jolts = new ArrayList<>(numbers);
         jolts.add(0);
         jolts.sort(Comparator.naturalOrder());
@@ -37,12 +37,12 @@ public interface Day10 {
         return getArrangements(jolts);
     }
 
-    private static int getArrangements(List<Integer> jolts) {
+    private static long getArrangements(List<Integer> jolts) {
         String key = jolts.stream().map(Object::toString).collect(Collectors.joining(", "));
         if (cache.containsKey(key)) {
             return cache.get(key);
         }
-        int result = 1;
+        long result = 1;
         for (int i = 1; i < jolts.size() - 1; i++) {
             if (jolts.get(i + 1) - jolts.get(i - 1) <= 3) {
                 List<Integer> newJolts = new ArrayList<>(List.of(jolts.get(i - 1)));

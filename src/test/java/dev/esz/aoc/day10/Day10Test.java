@@ -41,6 +41,6 @@ class Day10Test {
     @Test
     void part2() {
         List<Integer> lines = Utils.readInts("src/main/resources/day10/input.txt");
-        Assertions.assertThat(Day10.part2(lines)).isEqualTo(301059584);
+        Assertions.assertThat(Day10.part2(lines)).isEqualTo(49607173328384L);
     }
 }
