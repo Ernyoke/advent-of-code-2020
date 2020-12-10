@@ -9,7 +9,20 @@ import java.util.List;
 import java.util.Set;
 
 public class Utils {
-    public static List<Long> readNumbers(String path) {
+    public static List<Integer> readInts(String path) {
+        List<Integer> numbers = new ArrayList<>();
+        try (BufferedReader bufferedReader = new BufferedReader(new FileReader(path))) {
+            String line;
+            while ((line = bufferedReader.readLine()) != null) {
+                numbers.add(Integer.valueOf(line));
+            }
+        } catch (IOException ioException) {
+            ioException.printStackTrace();
+        }
+        return numbers;
+    }
+
+    public static List<Long> readLongs(String path) {
         List<Long> numbers = new ArrayList<>();
         try (BufferedReader bufferedReader = new BufferedReader(new FileReader(path))) {
             String line;
