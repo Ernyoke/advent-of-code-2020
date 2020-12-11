@@ -10,7 +10,7 @@ class Day11Test {
 
     @Test
     void part1Test1() {
-        List<String> lines = Utils.readLines("src/main/resources/day11/test.txt");
+        List<String> lines = Utils.readLines("src/main/resources/day11/test1.txt");
         Assertions.assertThat(Day11.part1(lines)).isEqualTo(37);
     }
 
@@ -22,7 +22,7 @@ class Day11Test {
 
     @Test
     void part2Test1() {
-        List<String> lines = Utils.readLines("src/main/resources/day11/test.txt");
+        List<String> lines = Utils.readLines("src/main/resources/day11/test1.txt");
         Assertions.assertThat(Day11.part2(lines)).isEqualTo(26);
     }
 

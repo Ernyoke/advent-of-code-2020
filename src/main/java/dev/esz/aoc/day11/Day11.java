@@ -31,8 +31,8 @@ public interface Day11 {
         String[][] newSeatMap = null;
         boolean isChange = true;
         while (isChange) {
-            newSeatMap = new String[seatMap.length][seatMap[0].length];
             isChange = false;
+            newSeatMap = new String[seatMap.length][seatMap[0].length];
             for (int x = 0; x < seatMap.length; x++) {
                 for (int y = 0; y < seatMap[x].length; y++) {
                     if (seatMap[x][y].equals("L") && countAdjacentSeats(seatMap, x, y, "#") == 0) {
@@ -53,15 +53,14 @@ public interface Day11 {
         return newSeatMap;
     }
 
-    private static int countAdjacentSeats(String[][] seats, int x, int y, String seatStatus) {
+    private static int countAdjacentSeats(String[][] seatMap, int x, int y, String seatStatus) {
         int counter = 0;
         for (Direction direction : Direction.values()) {
             int newX = x + direction.getX();
             int newY = y + direction.getY();
-            if (MathUtils.isBetweenInclusive(newX, 0, seats.length - 1) &&
-                    MathUtils.isBetweenInclusive(newY, 0, seats[0].length - 1)
-            ) {
-                if (seats[newX][newY].equals(seatStatus)) {
+            if (MathUtils.isBetweenInclusive(newX, 0, seatMap.length - 1) &&
+                    MathUtils.isBetweenInclusive(newY, 0, seatMap[0].length - 1)) {
+                if (seatMap[newX][newY].equals(seatStatus)) {
                     counter++;
                 }
             }
@@ -69,9 +68,9 @@ public interface Day11 {
         return counter;
     }
 
-    private static int countSeats(String[][] seats, String seatStatus) {
+    private static int countSeats(String[][] seatMap, String seatStatus) {
         int counter = 0;
-        for (String[] x : seats) {
+        for (String[] x : seatMap) {
             for (String y : x) {
                 if (y.equals(seatStatus)) {
                     counter++;
@@ -85,8 +84,8 @@ public interface Day11 {
         String[][] newSeatMap = null;
         boolean isChange = true;
         while (isChange) {
-            newSeatMap = new String[seatMap.length][seatMap[0].length];
             isChange = false;
+            newSeatMap = new String[seatMap.length][seatMap[0].length];
             for (int x = 0; x < seatMap.length; x++) {
                 for (int y = 0; y < seatMap[x].length; y++) {
                     if (seatMap[x][y].equals("L") && countAdjacentVisibleSeats(seatMap, x, y, "#") == 0) {
@@ -107,10 +106,10 @@ public interface Day11 {
         return newSeatMap;
     }
 
-    private static int countAdjacentVisibleSeats(String[][] seats, int x, int y, String seatStatus) {
+    private static int countAdjacentVisibleSeats(String[][] seatMap, int x, int y, String seatStatus) {
         int counter = 0;
         for (Direction direction : Direction.values()) {
-            counter += getVisibleSeat(seats, x, y, direction).filter(seatStatus::equals).isPresent() ? 1 : 0;
+            counter += getVisibleSeat(seatMap, x, y, direction).filter(seatStatus::equals).isPresent() ? 1 : 0;
         }
         return counter;
     }
@@ -119,8 +118,7 @@ public interface Day11 {
         int newX = x + direction.getX();
         int newY = y + direction.getY();
         while (MathUtils.isBetweenInclusive(newX, 0, seatMap.length - 1) &&
-                MathUtils.isBetweenInclusive(newY, 0, seatMap[0].length - 1)
-        ) {
+                MathUtils.isBetweenInclusive(newY, 0, seatMap[0].length - 1)) {
             if (!seatMap[newX][newY].equals(".")) {
                 return Optional.of(seatMap[newX][newY]);
             }
@@ -142,5 +140,4 @@ enum Direction {
         this.x = x;
         this.y = y;
     }
-
 }
