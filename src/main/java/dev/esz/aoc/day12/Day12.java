@@ -3,7 +3,6 @@ package dev.esz.aoc.day12;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -108,7 +107,10 @@ enum Direction {
     private final int x;
     private final int y;
 
-    private static final List<String> stringValues = new ArrayList<>();
+    @Getter
+    private static final List<String> stringValues = Arrays.stream(values())
+            .map(Direction::toString)
+            .collect(Collectors.toUnmodifiableList());
 
     public abstract Direction turn(Orientation orientation);
 
@@ -121,30 +123,15 @@ enum Direction {
         }
         return currentDirection;
     }
-
-    static List<String> getStringValues() {
-        if (stringValues.isEmpty()) {
-            stringValues.addAll(Arrays.stream(values())
-                    .map(Direction::toString)
-                    .collect(Collectors.toUnmodifiableList()));
-        }
-        return stringValues;
-    }
 }
 
 enum Orientation {
     L, R;
 
-    private static final List<String> stringValues = new ArrayList<>();
-
-    static List<String> getStringValues() {
-        if (stringValues.isEmpty()) {
-            stringValues.addAll(Arrays.stream(values())
-                    .map(Orientation::toString)
-                    .collect(Collectors.toUnmodifiableList()));
-        }
-        return stringValues;
-    }
+    @Getter
+    private static final List<String> stringValues = Arrays.stream(values())
+            .map(Orientation::toString)
+            .collect(Collectors.toUnmodifiableList());
 }
 
 @RequiredArgsConstructor
@@ -169,8 +156,9 @@ class Vector {
     }
 
     public Vector rotate(Rotation rotation) {
-        int angle = rotation.getOrientation() == Orientation.L ? 360 - rotation.getAngle() : rotation.getAngle();
-        switch (angle) {
+        int angle = rotation.getAngle() % 360;
+        int leftRotationAngle = (rotation.getOrientation() == Orientation.L ? 360 - angle : angle);
+        switch (leftRotationAngle) {
             case 90:
                 return new Vector(-y, x);
             case 180:
