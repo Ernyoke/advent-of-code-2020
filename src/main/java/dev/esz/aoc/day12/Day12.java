@@ -3,7 +3,10 @@ package dev.esz.aoc.day12;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @SuppressWarnings("DuplicatedCode")
 public interface Day12 {
@@ -22,7 +25,7 @@ public interface Day12 {
         for (String line : lines) {
             String action = line.substring(0, 1);
             int value = Integer.parseInt(line.substring(1));
-            if (List.of("N", "S", "E", "W").contains(action)) {
+            if (Direction.getStringValues().contains(action)) {
                 Direction direction = Direction.valueOf(action);
                 shipPosition = shipPosition.add(new Vector(direction.getX() * value, direction.getY() * value));
                 continue;
@@ -31,9 +34,8 @@ public interface Day12 {
                 shipPosition = shipPosition.add(new Vector(currentDirection.getX() * value, currentDirection.getY() * value));
                 continue;
             }
-            if (List.of("L", "R").contains(action)) {
-                Rotation rotation = new Rotation(Orientation.valueOf(action), value);
-                currentDirection = currentDirection.turn(rotation);
+            if (Orientation.getStringValues().contains(action)) {
+                currentDirection = currentDirection.turn(new Rotation(Orientation.valueOf(action), value));
             }
         }
         return shipPosition.distance(new Vector(0, 0));
@@ -42,10 +44,11 @@ public interface Day12 {
     private static int getDistanceWithWaypoint(List<String> lines) {
         Vector shipPosition = new Vector(0, 0);
         Vector wayPoint = new Vector(1, 10);
+
         for (String line : lines) {
             String action = line.substring(0, 1);
             int value = Integer.parseInt(line.substring(1));
-            if (List.of("N", "S", "E", "W").contains(action)) {
+            if (Direction.getStringValues().contains(action)) {
                 Direction direction = Direction.valueOf(action);
                 wayPoint = wayPoint.add(new Vector(direction.getX() * value, direction.getY() * value));
                 continue;
@@ -54,8 +57,8 @@ public interface Day12 {
                 shipPosition = shipPosition.add(wayPoint.multiply(value));
                 continue;
             }
-            if (List.of("L", "R").contains(action)) {
-                wayPoint = wayPoint.rotate(value, Orientation.valueOf(action));
+            if (Orientation.getStringValues().contains(action)) {
+                wayPoint = wayPoint.rotate(new Rotation(Orientation.valueOf(action), value));
             }
         }
         return shipPosition.distance(new Vector(0, 0));
@@ -71,21 +74,24 @@ enum Direction {
             }
             return Direction.W;
         }
-    }, S(-1, 0) {
+    },
+    S(-1, 0) {
         public Direction turn(Orientation orientation) {
             if (orientation == Orientation.R) {
                 return Direction.W;
             }
             return Direction.E;
         }
-    }, E(0, 1) {
+    },
+    E(0, 1) {
         public Direction turn(Orientation orientation) {
             if (orientation == Orientation.R) {
                 return Direction.S;
             }
             return Direction.N;
         }
-    }, W(0, -1) {
+    },
+    W(0, -1) {
         public Direction turn(Orientation orientation) {
             if (orientation == Orientation.R) {
                 return Direction.N;
@@ -102,6 +108,8 @@ enum Direction {
     private final int x;
     private final int y;
 
+    private static final List<String> stringValues = new ArrayList<>();
+
     public abstract Direction turn(Orientation orientation);
 
     public Direction turn(Rotation rotation) {
@@ -113,10 +121,30 @@ enum Direction {
         }
         return currentDirection;
     }
+
+    static List<String> getStringValues() {
+        if (stringValues.isEmpty()) {
+            stringValues.addAll(Arrays.stream(values())
+                    .map(Direction::toString)
+                    .collect(Collectors.toUnmodifiableList()));
+        }
+        return stringValues;
+    }
 }
 
 enum Orientation {
-    L, R
+    L, R;
+
+    private static final List<String> stringValues = new ArrayList<>();
+
+    static List<String> getStringValues() {
+        if (stringValues.isEmpty()) {
+            stringValues.addAll(Arrays.stream(values())
+                    .map(Orientation::toString)
+                    .collect(Collectors.toUnmodifiableList()));
+        }
+        return stringValues;
+    }
 }
 
 @RequiredArgsConstructor
@@ -140,10 +168,8 @@ class Vector {
         return new Vector(x * scalar, y * scalar);
     }
 
-    public Vector rotate(int angle, Orientation orientation) {
-        if (orientation == Orientation.L) {
-            angle = 360 - angle;
-        }
+    public Vector rotate(Rotation rotation) {
+        int angle = rotation.getOrientation() == Orientation.L ? 360 - rotation.getAngle() : rotation.getAngle();
         switch (angle) {
             case 90:
                 return new Vector(-y, x);
