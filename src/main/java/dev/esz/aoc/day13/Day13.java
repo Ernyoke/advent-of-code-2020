@@ -46,18 +46,18 @@ public interface Day13 {
         return ((div + 1) * departure - estimate) % departure;
     }
 
-    private static long chineseReminder(List<Integer> numbers, List<Integer> dividers) {
-        long product = numbers.stream()
+    private static long chineseReminder(List<Integer> reminders, List<Integer> moduli) {
+        long product = reminders.stream()
                 .mapToLong(i -> i)
                 .reduce(1, (a, b) -> a * b);
         long sum = 0;
 
-        for (int i = 0; i < numbers.size(); i++) {
-            long partialProduct = product / numbers.get(i);
+        for (int i = 0; i < reminders.size(); i++) {
+            long partialProduct = product / reminders.get(i);
             long inverse = BigInteger.valueOf(partialProduct)
-                    .modInverse(BigInteger.valueOf(numbers.get(i)))
+                    .modInverse(BigInteger.valueOf(reminders.get(i)))
                     .longValue();
-            sum += partialProduct * inverse * dividers.get(i);
+            sum += partialProduct * inverse * moduli.get(i);
         }
 
         return sum % product;
