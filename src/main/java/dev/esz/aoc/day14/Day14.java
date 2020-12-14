@@ -26,9 +26,8 @@ public class Day14 {
         Map<Long, Long> memory = new HashMap<>();
         for (String line : lines) {
             String[] parts = line.split(" = ");
-            String maskStr = parts[1];
             if (parts[0].equals("mask")) {
-                mask = Mask.build(maskStr);
+                mask = Mask.build(parts[1]);
             } else {
                 Matcher matcher = pattern.matcher(parts[0]);
                 if (matcher.find()) {
@@ -124,15 +123,6 @@ class MaskV2 {
         return binaryBuilder.toString();
     }
 
-    private static String getBinaryWithPrefix(long i, long n) {
-        StringBuilder helper = new StringBuilder();
-        for (int k = 0; k < n; k++) {
-            helper.append("0");
-        }
-        String binary = Long.toBinaryString(i);
-        return helper.replace(helper.length() - binary.length(), helper.length(), binary).toString();
-    }
-
     private List<String> computeCombinations(String binaryAddress) {
         List<String> result = new ArrayList<>();
         long countX = mask.chars().filter(c -> c == 'X').count();
@@ -149,6 +139,15 @@ class MaskV2 {
             result.add(addressBuilder.toString());
         }
         return result;
+    }
+
+    private static String getBinaryWithPrefix(long i, long n) {
+        StringBuilder helper = new StringBuilder();
+        for (int k = 0; k < n; k++) {
+            helper.append("0");
+        }
+        String binary = Long.toBinaryString(i);
+        return helper.replace(helper.length() - binary.length(), helper.length(), binary).toString();
     }
 
 }
