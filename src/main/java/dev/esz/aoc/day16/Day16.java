@@ -1,7 +1,6 @@
 package dev.esz.aoc.day16;
 
 import dev.esz.aoc.utils.MathUtils;
-import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
@@ -69,22 +68,24 @@ public interface Day16 {
             tickets.add(Ticket.fromString(lines.get(i)));
         }
 
+        // Filter tickets which do not contain errors.
         List<Ticket> validTickets = tickets.stream()
                 .filter(ticket -> ticket.getInvalidValues(fields).size() <= 0)
                 .collect(Collectors.toUnmodifiableList());
 
-        List<List<Integer>> columns = new ArrayList<>();
-        for (Field field : fields) {
-            columns.add(getPotentialColumns(field, validTickets));
-        }
+        // Get all possible positions for every field on the ticket.
+        List<List<Integer>> possibleFieldPositions = fields.stream()
+                .map(field -> getPotentialFieldPositions(field, validTickets))
+                .collect(Collectors.toUnmodifiableList());
 
-        return getFieldsWithPositionMap(fields, columns).entrySet().stream()
+        // Map every field to the correct possition and return result.
+        return getFieldsWithPositions(fields, possibleFieldPositions).entrySet().stream()
                 .filter(entry -> entry.getKey().getName().contains("departure"))
                 .mapToLong(entry -> myTicket.getValues().get(entry.getValue()))
                 .reduce(1, (a, b) -> a * b);
     }
 
-    private static List<Integer> getPotentialColumns(Field field, List<Ticket> tickets) {
+    private static List<Integer> getPotentialFieldPositions(Field field, List<Ticket> tickets) {
         List<Integer> columns = new ArrayList<>();
         for (int i = 0; i < tickets.get(0).getValues().size(); i++) {
             boolean isValid = true;
@@ -102,21 +103,23 @@ public interface Day16 {
         return columns;
     }
 
-    private static Map<Field, Integer> getFieldsWithPositionMap(List<Field> fields, List<List<Integer>> columns) {
+    // Maps every field with its final position. This works because the input guarantees that we have one single
+    // solution. In case of multiple potential solutions, this greedy approach may not work.
+    private static Map<Field, Integer> getFieldsWithPositions(List<Field> fields, List<List<Integer>> potentialPositions) {
         Map<Field, Integer> map = new HashMap<>();
-        for (int j = 0; j < fields.size(); j++) {
-            int index = getColumnIndexWithOneElement(columns);
-            int singleElement = columns.get(index).get(0);
-            map.put(fields.get(index), singleElement);
+        for (int i = 0; i < fields.size(); i++) {
+            int position = getPotentialPositionsWithSingleElement(potentialPositions);
+            int singleElement = potentialPositions.get(position).get(0);
+            map.put(fields.get(position), singleElement);
 
-            for (int k = 0; k < fields.size(); k++) {
-                columns.get(k).remove(Integer.valueOf(singleElement));
+            for (int j = 0; j < fields.size(); j++) {
+                potentialPositions.get(j).remove(Integer.valueOf(singleElement));
             }
         }
         return map;
     }
 
-    private static int getColumnIndexWithOneElement(List<List<Integer>> columns) {
+    private static int getPotentialPositionsWithSingleElement(List<List<Integer>> columns) {
         for (int i = 0; i < columns.size(); i++) {
             if (columns.get(i).size() == 1) {
                 return i;
@@ -128,11 +131,9 @@ public interface Day16 {
 
 @RequiredArgsConstructor
 @Getter
-@EqualsAndHashCode
 class Field {
     private final String name;
 
-    @EqualsAndHashCode.Exclude
     private final List<Interval> intervals;
 
     public boolean isValid(int value) {
@@ -163,7 +164,9 @@ class Ticket {
     private final List<Integer> values;
 
     public static Ticket fromString(String string) {
-        return new Ticket(Arrays.stream(string.split(",")).map(Integer::valueOf).collect(Collectors.toUnmodifiableList()));
+        return new Ticket(Arrays.stream(string.split(","))
+                .map(Integer::valueOf)
+                .collect(Collectors.toUnmodifiableList()));
     }
 
     public List<Integer> getInvalidValues(List<Field> fields) {
@@ -173,7 +176,6 @@ class Ticket {
     }
 
     private boolean isValueInvalid(int value, List<Field> fields) {
-        return fields.stream()
-                .noneMatch(field -> field.isValid(value));
+        return fields.stream().noneMatch(field -> field.isValid(value));
     }
 }
