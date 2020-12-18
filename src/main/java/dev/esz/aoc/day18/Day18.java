@@ -79,43 +79,37 @@ public interface Day18 {
 
     private static long solveLineAdditionPrecedence(List<String> equation) {
         long result = 0;
-        Operation operation = Operation.ADD;
         int i = 0;
         while (i < equation.size()) {
             String part = equation.get(i);
 
             if (pattern.matcher(part).matches()) {
-                if (operation == Operation.MULTIPLY) {
-                    result = operation.apply(result, solveLineAdditionPrecedence(equation.subList(i, equation.size())));
-                    break;
-                }
-                result = operation.apply(result, Long.parseLong(part));
+                result = Operation.ADD.apply(result, Long.parseLong(part));
                 i++;
                 continue;
             }
 
             if (part.equals("(")) {
-                if (operation == Operation.MULTIPLY) {
-                    result = operation.apply(result, solveLineAdditionPrecedence(equation.subList(i, equation.size())));
-                    break;
-                }
                 List<String> subEquation = extractSubEquation(equation, i);
-                result = operation.apply(result, solveLineAdditionPrecedence(subEquation));
+                result = Operation.ADD.apply(result, solveLineAdditionPrecedence(subEquation));
                 i += subEquation.size() + 2;
                 continue;
             }
 
-            operation = Operation.fromString(part);
+            if (Operation.fromString(part) == Operation.MULTIPLY) {
+                result = Operation.MULTIPLY.apply(result, solveLineAdditionPrecedence(equation.subList(i + 1, equation.size())));
+                break;
+            }
             i++;
         }
         return result;
     }
 
-    private static List<String> extractSubEquation(List<String> line, int i) {
+    private static List<String> extractSubEquation(List<String> line, int index) {
         int openBrackets = 1;
-        int j = i + 1;
-        for (; j < line.size() && openBrackets > 0; j++) {
-            String nextPart = line.get(j);
+        int i = index + 1;
+        for (; i < line.size() && openBrackets > 0; i++) {
+            String nextPart = line.get(i);
             if (nextPart.equals("(")) {
                 openBrackets++;
                 continue;
@@ -124,7 +118,7 @@ public interface Day18 {
                 openBrackets--;
             }
         }
-        return line.subList(i + 1, j - 1);
+        return line.subList(index + 1, i - 1);
     }
 }
 
