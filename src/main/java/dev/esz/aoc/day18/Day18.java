@@ -11,14 +11,14 @@ public interface Day18 {
     static long part1(List<String> lines) {
         return lines.stream()
                 .map(Day18::splitLine)
-                .mapToLong(Day18::solveLineSameOperationPrecedence)
+                .mapToLong(Day18::solveExpressionSameOperationPrecedence)
                 .sum();
     }
 
     static long part2(List<String> lines) {
         return lines.stream()
                 .map(Day18::splitLine)
-                .mapToLong(Day18::solveLineAdditionPrecedence)
+                .mapToLong(Day18::solveExpressionAdditionPrecedence)
                 .sum();
     }
 
@@ -50,12 +50,12 @@ public interface Day18 {
         return parts;
     }
 
-    private static long solveLineSameOperationPrecedence(List<String> equation) {
+    private static long solveExpressionSameOperationPrecedence(List<String> expression) {
         long result = 0;
         Operation operation = Operation.ADD;
         int i = 0;
-        while (i < equation.size()) {
-            String part = equation.get(i);
+        while (i < expression.size()) {
+            String part = expression.get(i);
 
             if (pattern.matcher(part).matches()) {
                 long value = Long.parseLong(part);
@@ -65,8 +65,8 @@ public interface Day18 {
             }
 
             if (part.equals("(")) {
-                List<String> subEquation = extractSubEquation(equation, i);
-                result = operation.apply(result, solveLineSameOperationPrecedence(subEquation));
+                List<String> subEquation = extractSubExpression(expression, i);
+                result = operation.apply(result, solveExpressionSameOperationPrecedence(subEquation));
                 i += subEquation.size() + 2;
                 continue;
             }
@@ -77,11 +77,11 @@ public interface Day18 {
         return result;
     }
 
-    private static long solveLineAdditionPrecedence(List<String> equation) {
+    private static long solveExpressionAdditionPrecedence(List<String> expression) {
         long result = 0;
         int i = 0;
-        while (i < equation.size()) {
-            String part = equation.get(i);
+        while (i < expression.size()) {
+            String part = expression.get(i);
 
             if (pattern.matcher(part).matches()) {
                 result = Operation.ADD.apply(result, Long.parseLong(part));
@@ -90,14 +90,14 @@ public interface Day18 {
             }
 
             if (part.equals("(")) {
-                List<String> subEquation = extractSubEquation(equation, i);
-                result = Operation.ADD.apply(result, solveLineAdditionPrecedence(subEquation));
-                i += subEquation.size() + 2;
+                List<String> subExpression = extractSubExpression(expression, i);
+                result = Operation.ADD.apply(result, solveExpressionAdditionPrecedence(subExpression));
+                i += subExpression.size() + 2;
                 continue;
             }
 
             if (Operation.fromString(part) == Operation.MULTIPLY) {
-                result = Operation.MULTIPLY.apply(result, solveLineAdditionPrecedence(equation.subList(i + 1, equation.size())));
+                result = Operation.MULTIPLY.apply(result, solveExpressionAdditionPrecedence(expression.subList(i + 1, expression.size())));
                 break;
             }
             i++;
@@ -105,11 +105,11 @@ public interface Day18 {
         return result;
     }
 
-    private static List<String> extractSubEquation(List<String> line, int index) {
+    private static List<String> extractSubExpression(List<String> expression, int index) {
         int openBrackets = 1;
         int i = index + 1;
-        for (; i < line.size() && openBrackets > 0; i++) {
-            String nextPart = line.get(i);
+        for (; i < expression.size() && openBrackets > 0; i++) {
+            String nextPart = expression.get(i);
             if (nextPart.equals("(")) {
                 openBrackets++;
                 continue;
@@ -118,7 +118,7 @@ public interface Day18 {
                 openBrackets--;
             }
         }
-        return line.subList(index + 1, i - 1);
+        return expression.subList(index + 1, i - 1);
     }
 }
 
