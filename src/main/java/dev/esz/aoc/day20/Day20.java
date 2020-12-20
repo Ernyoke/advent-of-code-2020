@@ -21,21 +21,20 @@ public interface Day20 {
         Pane firstCorner = new ArrayList<>(corners.keySet()).get(0);
         List<String[]> commonBorders = corners.get(firstCorner);
 
-        AlignmentResult alignmentResult = alignRightBorderPane(firstCorner, commonBorders.get(0));
-        AlignmentResult alignmentResult2 = alignBottomBorder(alignmentResult.getPane(), commonBorders.get(1));
-        panesMap[0][0] = alignmentResult2.getPane();
+        alignToRightBorder(firstCorner, commonBorders.get(0))
+                .flatMap(pane -> alignToBottomBorder(pane, commonBorders.get(1)))
+                .ifPresent(pane -> panesMap[0][0] = pane);
         usedPanes.add(firstCorner.getId());
 
         for (int i = 1; i < n; i++) {
             for (Pane pane : panes) {
                 if (!usedPanes.contains(pane.getId())) {
-                    AlignmentResult result = alignLeftBorderPane(pane, panesMap[0][i - 1].getRightBorder());
-//                    assert result != null;
-                    if (result.isFits()) {
-                        panesMap[0][i] = result.getPane();
-                        usedPanes.add(result.getPane().getId());
-                        break;
-                    }
+                    final int j = i;
+                    alignToLeftBorder(pane, panesMap[0][i - 1].getRightBorder())
+                            .ifPresent(alignedPane -> {
+                                panesMap[0][j] = alignedPane;
+                                usedPanes.add(alignedPane.getId());
+                            });
                 }
             }
         }
@@ -44,10 +43,10 @@ public interface Day20 {
             for (int j = 0; j < n; j++) {
                 for (Pane pane : panes) {
                     if (!usedPanes.contains(pane.getId())) {
-                        AlignmentResult result = alignTopBorder(pane, panesMap[i - 1][j].getBottomBorder());
-                        if (result.isFits()) {
-                            panesMap[i][j] = result.getPane();
-                            usedPanes.add(result.getPane().getId());
+                        Optional<Pane> result = alignToTopBorder(pane, panesMap[i - 1][j].getBottomBorder());
+                        if (result.isPresent()) {
+                            panesMap[i][j] = result.get();
+                            usedPanes.add(result.get().getId());
                             break;
                         }
                     }
@@ -116,11 +115,11 @@ public interface Day20 {
         return commonBorders;
     }
 
-    private static AlignmentResult alignRightBorderPane(Pane pane, String[] border) {
+    private static Optional<Pane> alignToRightBorder(Pane pane, String[] border) {
         for (int i = 0; i < 4; i++) {
             pane = pane.rotateRight();
             if (Arrays.equals(border, pane.getRightBorder())) {
-                return new AlignmentResult(pane, true);
+                return Optional.of(pane);
             }
         }
 
@@ -128,18 +127,18 @@ public interface Day20 {
         for (int i = 0; i < 4; i++) {
             pane = pane.rotateRight();
             if (Arrays.equals(border, pane.getRightBorder())) {
-                return new AlignmentResult(pane, true);
+                return Optional.of(pane);
             }
         }
 
-        return new AlignmentResult(pane, false);
+        return Optional.empty();
     }
 
-    private static AlignmentResult alignLeftBorderPane(Pane pane, String[] border) {
+    private static Optional<Pane> alignToLeftBorder(Pane pane, String[] border) {
         for (int i = 0; i < 4; i++) {
             pane = pane.rotateRight();
             if (Arrays.equals(border, pane.getLeftBorder())) {
-                return new AlignmentResult(pane, true);
+                return Optional.of(pane);
             }
         }
 
@@ -147,18 +146,18 @@ public interface Day20 {
         for (int i = 0; i < 4; i++) {
             pane = pane.rotateRight();
             if (Arrays.equals(border, pane.getLeftBorder())) {
-                return new AlignmentResult(pane, true);
+                return Optional.of(pane);
             }
         }
 
-        return new AlignmentResult(pane, false);
+        return Optional.empty();
     }
 
-    private static AlignmentResult alignBottomBorder(Pane pane, String[] border) {
+    private static Optional<Pane> alignToBottomBorder(Pane pane, String[] border) {
         for (int i = 0; i < 4; i++) {
             pane = pane.rotateRight();
             if (Arrays.equals(border, pane.getBottomBorder())) {
-                return new AlignmentResult(pane, true);
+                return Optional.of(pane);
             }
         }
 
@@ -166,18 +165,18 @@ public interface Day20 {
         for (int i = 0; i < 4; i++) {
             pane = pane.rotateRight();
             if (Arrays.equals(border, pane.getBottomBorder())) {
-                return new AlignmentResult(pane, true);
+                return Optional.of(pane);
             }
         }
 
-        return new AlignmentResult(pane, false);
+        return Optional.empty();
     }
 
-    private static AlignmentResult alignTopBorder(Pane pane, String[] border) {
+    private static Optional<Pane> alignToTopBorder(Pane pane, String[] border) {
         for (int i = 0; i < 4; i++) {
             pane = pane.rotateRight();
             if (Arrays.equals(border, pane.getTopBorder())) {
-                return new AlignmentResult(pane, true);
+                return Optional.of(pane);
             }
         }
 
@@ -185,11 +184,11 @@ public interface Day20 {
         for (int i = 0; i < 4; i++) {
             pane = pane.rotateRight();
             if (Arrays.equals(border, pane.getTopBorder())) {
-                return new AlignmentResult(pane, true);
+                return Optional.of(pane);
             }
         }
 
-        return new AlignmentResult(pane, false);
+        return Optional.empty();
     }
 
     private static Pane createBigMapPane(Pane[][] panesMap) {
@@ -220,7 +219,6 @@ public interface Day20 {
             }
         }
 
-
         for (int i = 0; i < 4; i++) {
             pane = pane.rotateRight();
             int nrOfMonsters = countMonsters(pane, monster);
@@ -247,20 +245,18 @@ public interface Day20 {
         for (int i = 0; i < bigPane.length - monster.length; i++) {
             for (int j = 0; j < bigPane[0].length - monster[0].length; j++) {
                 boolean allMatch = true;
-                for (int x = 0; x < monster.length && allMatch; x++) {
-                    for (int y = 0; y < monster[0].length && allMatch; y++) {
+                label:
+                for (int x = 0; x < monster.length; x++) {
+                    for (int y = 0; y < monster[0].length; y++) {
                         if (monster[x][y].equals("#")) {
                             if (!bigPane[i + x][j + y].equals("#")) {
                                 allMatch = false;
+                                break label;
                             }
                         }
                     }
                 }
                 if (allMatch) {
-                    for (int x = 0; x < monster.length; x++) {
-                        for (int y = 0; y < monster[0].length; y++) {
-                        }
-                    }
                     monsterCounter++;
                 }
             }
@@ -379,11 +375,4 @@ class Pane {
         }
         return count;
     }
-}
-
-@RequiredArgsConstructor
-@Getter
-class AlignmentResult {
-    private final Pane pane;
-    private final boolean fits;
 }
