@@ -1,6 +1,7 @@
 package dev.esz.aoc.day22;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 public interface Day22 {
 
@@ -63,22 +64,25 @@ public interface Day22 {
     }
 
     private static Queue<Integer> parsePlayerLines(List<String> lines) {
-        Queue<Integer> deque = new ArrayDeque<>();
+        Queue<Integer> queue = new ArrayDeque<>();
         for (String line : lines) {
             if (line.startsWith("Player")) {
                 continue;
             }
-            deque.offer(Integer.valueOf(line));
+            queue.offer(Integer.valueOf(line));
         }
-        return deque;
+        return queue;
     }
 
     private static long playGame(Queue<Integer> player1Deck, Queue<Integer> player2Deck) {
-        if (subGame(player1Deck, player2Deck) == 1) {
-            return computeWinnerResult(player1Deck);
+        switch (playSubGame(player1Deck, player2Deck)) {
+            case PLAYER1:
+                return computeWinnerResult(player1Deck);
+            case PLAYER2:
+                return computeWinnerResult(player2Deck);
+            default:
+                throw new IllegalStateException();
         }
-
-        return computeWinnerResult(player2Deck);
     }
 
     private static long playRecursiveGame(Queue<Integer> player1Deck, Queue<Integer> player2Deck) {
@@ -100,23 +104,24 @@ public interface Day22 {
             Integer card1 = player1Deck.poll();
             Integer card2 = player2Deck.poll();
 
+            Winner winner;
             if (card1 <= player1Deck.size() && card2 <= player2Deck.size()) {
-                if (subGame(createSubDeck(player1Deck, card1), createSubDeck(player2Deck, card2)) == 1) {
-                    player1Deck.offer(card1);
-                    player1Deck.offer(card2);
-                } else {
-                    player2Deck.offer(card2);
-                    player2Deck.offer(card1);
-                }
-                continue;
+                winner = playSubGame(createSubDeck(player1Deck, card1), createSubDeck(player2Deck, card2));
+            } else {
+                winner = card1 > card2 ? Winner.PLAYER1 : Winner.PLAYER2;
             }
 
-            if (card1 > card2) {
-                player1Deck.offer(card1);
-                player1Deck.offer(card2);
-            } else {
-                player2Deck.offer(card2);
-                player2Deck.offer(card1);
+            switch (winner) {
+                case PLAYER1: {
+                    player1Deck.offer(card1);
+                    player1Deck.offer(card2);
+                    break;
+                }
+                case PLAYER2: {
+                    player2Deck.offer(card2);
+                    player2Deck.offer(card1);
+                    break;
+                }
             }
         }
 
@@ -127,16 +132,13 @@ public interface Day22 {
         return computeWinnerResult(player2Deck);
     }
 
-    private static Queue<Integer> createSubDeck(Queue<Integer> deque, int size) {
-        Queue<Integer> subDeque = new ArrayDeque<>();
-        int i = 0;
-        for (Iterator<Integer> iterator = deque.iterator(); iterator.hasNext() && i < size; i++) {
-            subDeque.offer(iterator.next());
-        }
-        return subDeque;
+    private static Queue<Integer> createSubDeck(Queue<Integer> deck, int size) {
+        return deck.stream()
+                .limit(size)
+                .collect(Collectors.toCollection(ArrayDeque::new));
     }
 
-    private static int subGame(Queue<Integer> player1Deck, Queue<Integer> player2Deck) {
+    private static Winner playSubGame(Queue<Integer> player1Deck, Queue<Integer> player2Deck) {
         Set<List<Integer>> player1History = new HashSet<>();
         Set<List<Integer>> player2History = new HashSet<>();
 
@@ -145,7 +147,7 @@ public interface Day22 {
             List<Integer> player2List = new ArrayList<>(player2Deck);
 
             if (player1History.contains(player1List) || player2History.contains(player2List)) {
-                return 1;
+                return Winner.PLAYER1;
             }
 
             player1History.add(player1List);
@@ -163,9 +165,9 @@ public interface Day22 {
         }
 
         if (!player1Deck.isEmpty()) {
-            return 1;
+            return Winner.PLAYER1;
         }
-        return 2;
+        return Winner.PLAYER2;
     }
 
     private static long computeWinnerResult(Queue<Integer> player) {
@@ -176,4 +178,8 @@ public interface Day22 {
         }
         return sum;
     }
+}
+
+enum Winner {
+    PLAYER1, PLAYER2
 }
