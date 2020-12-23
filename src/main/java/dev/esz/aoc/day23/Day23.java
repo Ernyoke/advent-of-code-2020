@@ -56,18 +56,16 @@ public interface Day23 {
         return cup;
     }
 
-    static String part1(List<Integer> cups, int moves) {
-        Map<Integer, CircularLinkedList.Node> map = new HashMap<>();
+    static String part1(List<Integer> cups, int nrMoves) {
+        Map<Integer, CircularLinkedList.Node> indexToNode = new HashMap<>();
         CircularLinkedList circularLinkedList = new CircularLinkedList();
         for (Integer cup : cups) {
-            map.put(cup, circularLinkedList.add(cup));
+            indexToNode.put(cup, circularLinkedList.add(cup));
         }
 
-        CircularLinkedList.Node currentCupNode = circularLinkedList.getHead();
+        simulateMoves(circularLinkedList, indexToNode, nrMoves);
 
-        computeConnections(circularLinkedList, map, moves);
-
-        CircularLinkedList.Node first = map.get(1);
+        CircularLinkedList.Node first = indexToNode.get(1);
         StringBuilder stringBuffer = new StringBuilder();
         CircularLinkedList.Node next = first.getNext();
         while (next != first) {
@@ -78,35 +76,40 @@ public interface Day23 {
         return stringBuffer.toString();
     }
 
-    static long part2(List<Integer> cups, int moves) {
-        Map<Integer, CircularLinkedList.Node> map = new HashMap<>();
+    static long part2(List<Integer> cups, int nrMoves) {
+        Map<Integer, CircularLinkedList.Node> indexToNode = new HashMap<>();
         CircularLinkedList circularLinkedList = new CircularLinkedList();
         for (Integer cup : cups) {
-            map.put(cup, circularLinkedList.add(cup));
+            indexToNode.put(cup, circularLinkedList.add(cup));
         }
 
         int max = cups.stream().mapToInt(i -> i).max().orElseThrow();
 
         for (int i = max + 1; i <= 1_000_000; i++) {
-            map.put(i, circularLinkedList.add(i));
+            indexToNode.put(i, circularLinkedList.add(i));
         }
 
-        computeConnections(circularLinkedList, map, moves);
+        simulateMoves(circularLinkedList, indexToNode, nrMoves);
 
-        CircularLinkedList.Node first = map.get(1);
+        CircularLinkedList.Node first = indexToNode.get(1);
         return (long) first.getNext().getValue() * first.getNext().getNext().getValue();
     }
 
-    private static void computeConnections(CircularLinkedList circularLinkedList, Map<Integer, CircularLinkedList.Node> map, int moves) {
+    private static void simulateMoves(CircularLinkedList circularLinkedList,
+                                      Map<Integer, CircularLinkedList.Node> indexToNode,
+                                      int nrMoves) {
         CircularLinkedList.Node currentCupNode = circularLinkedList.getHead();
 
-        for (int i = 0; i < moves; i++) {
+        for (int i = 0; i < nrMoves; i++) {
 
             List<CircularLinkedList.Node> nextTreeCups = List.of(currentCupNode.getNext(),
                     currentCupNode.getNext().getNext(),
                     currentCupNode.getNext().getNext().getNext());
 
-            CircularLinkedList.Node destinationCupNode = getDestinationCup(nextTreeCups, currentCupNode, circularLinkedList.getSize(), map);
+            CircularLinkedList.Node destinationCupNode = getDestinationCup(nextTreeCups,
+                    currentCupNode,
+                    circularLinkedList.getSize(),
+                    indexToNode);
 
             CircularLinkedList.Node lastCupNode = nextTreeCups.get(nextTreeCups.size() - 1);
             currentCupNode.setNext(lastCupNode.getNext());
@@ -122,17 +125,17 @@ public interface Day23 {
     private static CircularLinkedList.Node getDestinationCup(List<CircularLinkedList.Node> nextTreeCups,
                                                              CircularLinkedList.Node currentCup,
                                                              int maxCup,
-                                                             Map<Integer, CircularLinkedList.Node> map) {
+                                                             Map<Integer, CircularLinkedList.Node> indexToNode) {
         int cup = currentCup.getValue() - 1;
         if (cup < 1) {
             cup = maxCup;
         }
-        while (nextTreeCups.contains(map.get(cup))) {
+        while (nextTreeCups.contains(indexToNode.get(cup))) {
             cup--;
             if (cup < 1) {
                 cup = maxCup;
             }
         }
-        return map.get(cup);
+        return indexToNode.get(cup);
     }
 }
