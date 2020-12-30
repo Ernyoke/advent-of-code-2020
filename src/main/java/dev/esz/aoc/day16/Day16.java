@@ -3,6 +3,7 @@ package dev.esz.aoc.day16;
 import dev.esz.aoc.utils.MathUtils;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -129,23 +130,20 @@ public interface Day16 {
     }
 }
 
-@RequiredArgsConstructor
-@Getter
+@Value
 class Field {
-    private final String name;
-
-    private final List<Interval> intervals;
+    String name;
+    List<Interval> intervals;
 
     public boolean isValid(int value) {
         return intervals.stream().anyMatch(interval -> interval.isValueIn(value));
     }
 }
 
-@RequiredArgsConstructor
-@Getter
+@Value
 class Interval {
-    private final int lower;
-    private final int upper;
+    int lower;
+    int upper;
 
     public boolean isValueIn(int value) {
         return MathUtils.isBetweenInclusive(value, lower, upper);
@@ -158,10 +156,9 @@ class Interval {
 }
 
 
-@RequiredArgsConstructor
-@Getter
+@Value
 class Ticket {
-    private final List<Integer> values;
+    List<Integer> values;
 
     public static Ticket fromString(String string) {
         return new Ticket(Arrays.stream(string.split(","))

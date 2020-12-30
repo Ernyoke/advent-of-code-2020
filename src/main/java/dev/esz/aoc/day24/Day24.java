@@ -2,8 +2,8 @@ package dev.esz.aoc.day24;
 
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 import lombok.ToString;
+import lombok.Value;
 
 import java.util.*;
 
@@ -88,13 +88,11 @@ enum Direction {
     }
 }
 
-@RequiredArgsConstructor
-@Getter
+@Value
 @EqualsAndHashCode
 @ToString
 class Position {
-    private final int x;
-    private final int y;
+    int x, y;
 
     public Position add(Direction direction) {
         return new Position(x + direction.getX(), y + direction.getY());

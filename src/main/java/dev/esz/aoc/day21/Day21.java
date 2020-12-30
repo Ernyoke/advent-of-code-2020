@@ -1,7 +1,6 @@
 package dev.esz.aoc.day21;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.Value;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -102,9 +101,8 @@ public interface Day21 {
 
 }
 
-@RequiredArgsConstructor
-@Getter
+@Value
 class Food {
-    private final Set<String> ingredients;
-    private final Set<String> allergens;
+    Set<String> ingredients;
+    Set<String> allergens;
 }

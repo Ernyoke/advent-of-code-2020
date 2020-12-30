@@ -1,9 +1,6 @@
 package dev.esz.aoc.day07;
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.Value;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -88,20 +85,18 @@ public interface Day07 {
 
 }
 
-@RequiredArgsConstructor
-@Getter
+@Value
 class Bag {
-    private final String color;
-    private final Map<String, Integer> content;
+    String color;
+    Map<String, Integer> content;
 
     public boolean containsBagWithColor(String color) {
         return content.get(color) != null;
     }
 }
 
-@Data
-@AllArgsConstructor
+@Value
 class BagWithCount {
-    private Bag bag;
-    private int contentCount;
+    Bag bag;
+    int contentCount;
 }

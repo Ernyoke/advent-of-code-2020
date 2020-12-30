@@ -1,8 +1,7 @@
 package dev.esz.aoc.day08;
 
 import lombok.Builder;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.Value;
 
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -93,18 +92,16 @@ enum Operation {
     nop, acc, jmp
 }
 
-@RequiredArgsConstructor
-@Getter
+@Value
 @Builder
 class Instruction {
-    private final Operation operation;
-    private final int argument;
+    Operation operation;
+    int argument;
 }
 
-@RequiredArgsConstructor
-@Getter
+@Value
 @Builder
 class ExecutionResult {
-    private final int accumulatorValue;
-    private final boolean infiniteLoop;
+    int accumulatorValue;
+    boolean infiniteLoop;
 }

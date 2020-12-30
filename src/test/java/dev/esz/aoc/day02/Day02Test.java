@@ -10,7 +10,7 @@ public class Day02Test {
 
     @Test
     void part1() {
-        List<String> lines = Utils.readLines("src/main/resources/.day02/input.txt");
+        List<String> lines = Utils.readLines("src/main/resources/day02/input.txt");
         Assertions.assertThat(Day02.part1(lines)).isEqualTo(580);
     }
 

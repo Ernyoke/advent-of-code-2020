@@ -1,7 +1,6 @@
 package dev.esz.aoc.day14;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.Value;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -61,11 +60,10 @@ public class Day14 {
     }
 }
 
-@RequiredArgsConstructor
-@Getter
+@Value
 class Mask {
-    private final long ones;
-    private final long zeros;
+    long ones;
+    long zeros;
 
     public long apply(long value) {
         return (value & zeros) | ones;
@@ -89,10 +87,9 @@ class Mask {
     }
 }
 
-@RequiredArgsConstructor
-@Getter
+@Value
 class MaskV2 {
-    private final String mask;
+    String mask;
 
     public List<Long> apply(Long address) {
         String binaryAddress = convertTo36Bits(Long.toBinaryString(address));

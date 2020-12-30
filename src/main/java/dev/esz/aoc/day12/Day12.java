@@ -1,7 +1,7 @@
 package dev.esz.aoc.day12;
 
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.Value;
 
 import java.util.Arrays;
 import java.util.List;
@@ -134,18 +134,15 @@ enum Orientation {
             .collect(Collectors.toUnmodifiableList());
 }
 
-@RequiredArgsConstructor
-@Getter
+@Value
 class Rotation {
-    private final Orientation orientation;
-    private final int angle;
+    Orientation orientation;
+    int angle;
 }
 
-@RequiredArgsConstructor
-@Getter
+@Value
 class Vector {
-    private final int x;
-    private final int y;
+    int x, y;
 
     public Vector add(Vector other) {
         return new Vector(x + other.getX(), y + other.getY());

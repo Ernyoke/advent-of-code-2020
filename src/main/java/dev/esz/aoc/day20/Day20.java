@@ -2,6 +2,7 @@ package dev.esz.aoc.day20;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
+import lombok.Value;
 
 import java.util.*;
 
@@ -265,11 +266,10 @@ public interface Day20 {
     }
 }
 
-@RequiredArgsConstructor
-@Getter
+@Value
 class Pane {
-    private final int id;
-    private final String[][] area;
+    int id;
+    String[][] area;
 
     public List<String[]> getAllBorders() {
         int n = area.length;

@@ -1,9 +1,7 @@
 package dev.esz.aoc.day02;
 
 import lombok.Builder;
-import lombok.Data;
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import lombok.Value;
 
 import java.util.List;
 
@@ -51,19 +49,17 @@ public interface Day02 {
     }
 }
 
-@Data
 @Builder
-@RequiredArgsConstructor
+@Value
 class Policy {
-    private final int min;
-    private final int max;
-    private final char character;
+    int min;
+    int max;
+    char character;
 }
 
-@Getter
 @Builder
-@RequiredArgsConstructor
+@Value
 class PasswordWithPolicy {
-    private final String password;
-    private final Policy policy;
+    String password;
+    Policy policy;
 }
